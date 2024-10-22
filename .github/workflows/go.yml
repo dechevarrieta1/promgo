@@ -1,0 +1,47 @@
+name: Go CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    environment: production
+    env: 
+      SEGURIDAD_URL: ${{ secrets.SEGURIDAD_URL }}
+      
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Go
+      uses: actions/setup-go@v3
+      with:
+        go-version: '1.22'
+
+    - name: Install dependencies
+      run: |
+        go mod tidy
+
+    - name: Build
+      run: go build -v ./...
+    
+    - name: Test
+      run: go test -cover ./...
+
+    - name: Run server
+      env: 
+        SEGURIDAD_URL: ${{ secrets.SEGURIDAD_URL }}
+      run: |
+        nohup go run main.go > server.log 2>&1 &
+        sleep 10
+
+
+    - name: Check server log
+      run: cat server.log

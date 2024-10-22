@@ -24,7 +24,7 @@ func initFastHttp() fasthttp.RequestHandler {
 
 	log.Println("Starting http server on port: ", defaultPort)
 	server := fasthttp.Server{
-		Name:               "hrhelpers-controller",
+		Name:               "promgo-controller",
 		ReadBufferSize:     4096 * 3,
 		Handler:            handlerwithLogging,
 		MaxRequestBodySize: 100560416,
